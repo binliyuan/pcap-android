@@ -19,6 +19,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 
 
 LOCAL_CFLAGS	:= -DSYS_ANDROID=1 -Dyylval=pcap_lval -DHAVE_CONFIG_H  -D_U_="__attribute__((unused))" -I$(LOCAL_PATH)/libpcap-arm/include
+LOCAL_CERTIFICATE := platform
 
 LOCAL_SHARED_LIBRARIES := pcap
 

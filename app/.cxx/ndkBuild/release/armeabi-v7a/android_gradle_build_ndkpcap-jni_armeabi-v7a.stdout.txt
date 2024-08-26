@@ -1,3 +1,1 @@
-[armeabi-v7a] Compile thumb  : ndkpcap-jni <= ndkpcap.c
-[armeabi-v7a] Prebuilt       : libpcap.so <= D:/AndroidPro/libpcap-for-android-master/libpcap-for-android-master/app/src/main/jni/jniLibs/armeabi-v7a/
-[armeabi-v7a] SharedLibrary  : libndkpcap-jni.so
+make: Nothing to be done for 'ndkpcap-jni'.

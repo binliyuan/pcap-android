@@ -101,10 +101,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        int uid = android.os.Process.myUid();
 //        moveFile();
         verifyStoragePermissions(this);
 //        createDir();
-        Toast.makeText(this, "run...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "running uid is --- " + uid, Toast.LENGTH_SHORT).show();
 //        if (Fisrt) {
 //            capture();
 //        }
@@ -229,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
         isFilter = findViewById(R.id.is_filter);
         start = findViewById(R.id.start);
         stop = findViewById(R.id.stop);
+        runAsRoot();
         if (isDeviceRooted()) {
             Log.d(TAG, "init: " + "is Device Rooted");
             runAsRoot();
