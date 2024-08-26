@@ -1,0 +1,134 @@
+{
+  "abi": "X86_64",
+  "abiPlatformVersion": 21,
+  "buildSettings": {
+    "environmentVariables": []
+  },
+  "cxxBuildFolder": "D:\\AndroidPro\\libpcap-for-android-master\\libpcap-for-android-master\\app\\.cxx\\ndkBuild\\release\\x86_64",
+  "info": {
+    "abi": "X86_64",
+    "bitness": 64,
+    "deprecated": false,
+    "default": true
+  },
+  "originalCxxBuildFolder": "D:\\AndroidPro\\libpcap-for-android-master\\libpcap-for-android-master\\app\\.cxx\\ndkBuild\\release\\x86_64",
+  "variant": {
+    "buildSystemArgumentList": [],
+    "buildTargetSet": [],
+    "implicitBuildTargetSet": [],
+    "cFlagsList": [],
+    "cmakeSettingsConfiguration": "android-gradle-plugin-predetermined-name",
+    "cppFlagsList": [],
+    "isDebuggableEnabled": false,
+    "module": {
+      "buildSystem": "NDK_BUILD",
+      "cmakeToolchainFile": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\build\\cmake\\android.toolchain.cmake",
+      "cxxFolder": "D:\\AndroidPro\\libpcap-for-android-master\\libpcap-for-android-master\\app\\.cxx",
+      "gradleModulePathName": ":app",
+      "intermediatesFolder": "D:\\AndroidPro\\libpcap-for-android-master\\libpcap-for-android-master\\app\\build\\intermediates",
+      "makeFile": "D:\\AndroidPro\\libpcap-for-android-master\\libpcap-for-android-master\\app\\src\\main\\jni\\Android.mk",
+      "moduleBuildFile": "D:\\AndroidPro\\libpcap-for-android-master\\libpcap-for-android-master\\app\\build.gradle",
+      "moduleRootFolder": "D:\\AndroidPro\\libpcap-for-android-master\\libpcap-for-android-master\\app",
+      "ndkDefaultAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkFolder": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125",
+      "ndkMetaAbiList": [
+        {
+          "abi": "ARMEABI_V7A",
+          "bitness": 32,
+          "deprecated": false,
+          "default": true
+        },
+        {
+          "abi": "ARM64_V8A",
+          "bitness": 64,
+          "deprecated": false,
+          "default": true
+        },
+        {
+          "abi": "X86",
+          "bitness": 32,
+          "deprecated": false,
+          "default": true
+        },
+        {
+          "abi": "X86_64",
+          "bitness": 64,
+          "deprecated": false,
+          "default": true
+        }
+      ],
+      "ndkMetaPlatforms": {
+        "min": 21,
+        "max": 34,
+        "aliases": {
+          "20": 19,
+          "25": 24,
+          "J": 16,
+          "J-MR1": 17,
+          "J-MR2": 18,
+          "K": 19,
+          "L": 21,
+          "L-MR1": 22,
+          "M": 23,
+          "N": 24,
+          "N-MR1": 24,
+          "O": 26,
+          "O-MR1": 27,
+          "P": 28,
+          "Q": 29,
+          "R": 30,
+          "S": 31,
+          "Sv2": 32,
+          "Tiramisu": 33,
+          "UpsideDownCake": 34
+        }
+      },
+      "ndkSupportedAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkDefaultStl": "SYSTEM",
+      "ndkVersion": "26.1.10909125",
+      "project": {
+        "compilerSettingsCacheFolder": "D:\\AndroidPro\\libpcap-for-android-master\\libpcap-for-android-master\\.cxx",
+        "cxxFolder": "D:\\AndroidPro\\libpcap-for-android-master\\libpcap-for-android-master\\.cxx",
+        "isBuildOnlyTargetAbiEnabled": true,
+        "isCmakeBuildCohabitationEnabled": false,
+        "isNativeCompilerSettingsCacheEnabled": false,
+        "rootBuildGradleFolder": "D:\\AndroidPro\\libpcap-for-android-master\\libpcap-for-android-master",
+        "sdkFolder": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk",
+        "isPrefabEnabled": false
+      },
+      "splitsAbiFilterSet": [],
+      "stlSharedObjectMap": {
+        "LIBCXX_SHARED": {
+          "ARMEABI_V7A": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\arm-linux-androideabi\\libc++_shared.so",
+          "ARM64_V8A": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\aarch64-linux-android\\libc++_shared.so",
+          "X86": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\i686-linux-android\\libc++_shared.so",
+          "X86_64": "C:\\Users\\Administrator\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\x86_64-linux-android\\libc++_shared.so"
+        },
+        "LIBCXX_STATIC": {},
+        "NONE": {},
+        "SYSTEM": {}
+      }
+    },
+    "objFolder": "D:\\AndroidPro\\libpcap-for-android-master\\libpcap-for-android-master\\app\\build\\intermediates\\ndkBuild\\release\\obj\\local",
+    "variantName": "release",
+    "validAbiList": [
+      "ARMEABI_V7A",
+      "ARM64_V8A",
+      "X86",
+      "X86_64"
+    ],
+    "prefabDirectory": "D:\\AndroidPro\\libpcap-for-android-master\\libpcap-for-android-master\\app\\.cxx\\ndkBuild\\release\\prefab",
+    "prefabPackageDirectoryList": []
+  },
+  "prefabFolder": "D:\\AndroidPro\\libpcap-for-android-master\\libpcap-for-android-master\\app\\.cxx\\ndkBuild\\release\\prefab\\x86_64"
+}

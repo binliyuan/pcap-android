@@ -1,0 +1,1 @@
+[x86_64] SharedLibrary  : libndkpcap-jni.so
