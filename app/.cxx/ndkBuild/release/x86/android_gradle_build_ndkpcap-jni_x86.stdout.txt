@@ -1,3 +1,0 @@
-[x86] Compile        : ndkpcap-jni <= ndkpcap.c
-[x86] Prebuilt       : libpcap.so <= D:/AndroidPro/libpcap-for-android-master/libpcap-for-android-master/app/src/main/jni/jniLibs/armeabi-v7a/
-[x86] SharedLibrary  : libndkpcap-jni.so
