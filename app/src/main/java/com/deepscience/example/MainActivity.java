@@ -18,8 +18,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jaredrummler.android.shell.Shell;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
     Button start;
 
     Button stop;
-
-    Shell.Console console;
 
     boolean Fisrt = true;
 
@@ -123,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this,"已停止抓包",Toast.LENGTH_SHORT).show();
                 tcpDumpUtil.stopTcpDump();
-
             }
         });
         isFilter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

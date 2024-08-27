@@ -9,6 +9,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import com.deepscience.example.parser.pcap.PCAP_Parser;
+
+import org.pcap4j.core.NotOpenException;
+import org.pcap4j.core.PacketListener;
+import org.pcap4j.core.PcapHandle;
+import org.pcap4j.core.PcapNativeException;
+import org.pcap4j.core.Pcaps;
+import org.pcap4j.packet.Packet;
+
 /**
  * CMD ������ִ�й���
  */
@@ -17,7 +26,7 @@ public class CmdUtils {
     public static final String COMMAND_LINE_END = "\n"; 
     public static final String COMMAND_EXIT = "exit\n";
     private boolean status = false; // true running ---- false exit
-    public StringBuffer successMsg = null;
+    public String successMsg = null;
     public StringBuffer errorMsg = null;
     public Handler mainHandler = null;
 
@@ -28,11 +37,6 @@ public class CmdUtils {
     public void setMainHandler(Handler mainHandler) {
         this.mainHandler = mainHandler;
     }
-
-    public static final String[] tpdump = {
-        "cd /sdcard/tmp/",
-        "tcpdump -i any -p -s 0",
-    };
 
     public boolean isStatus() {
         return status;
@@ -61,17 +65,15 @@ public class CmdUtils {
                 output.writeBytes(COMMAND_LINE_END);
                 output.flush();
             }
-            successMsg = new StringBuffer();
+            successMsg = new String();
             errorMsg = new StringBuffer();
             successResult = new BufferedReader(new InputStreamReader(process.getInputStream()));
             errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            System.out.println(successResult);
-            System.out.println(errorResult);
             String s;
             while ( (s = successResult.readLine()) != null) {
                 if (status == false)
                     break;
-                successMsg.append(s).append("\n");
+                successMsg = s + "\n";
                 Message message = new Message();
                 message.what = 1;
                 Bundle bundle = new Bundle();
