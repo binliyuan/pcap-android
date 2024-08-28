@@ -25,8 +25,8 @@ public class TcpDumpUtil {
     }
 
     public void runTcpDump() {
-        Thread thread = new Thread(processCmd);
-        thread.start();
+//        Thread thread = new Thread(processCmd);
+//        thread.start();
         Thread parserThread = new Thread(parser);
         parserThread.start();
     }

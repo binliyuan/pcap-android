@@ -1,5 +1,7 @@
 package com.deepscience.example;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.deepscience.example.pcapanalyzer.entity.format.FrameHeader;
@@ -12,6 +14,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class PcapRTCPParser {
@@ -30,62 +33,40 @@ public class PcapRTCPParser {
             }
 
             parseGlobalHeader(globalHeader);
-
-            // 开始读取每个数据包
-            while (fis.available() > 0) {
-                byte[] packetHeader = new byte[16];
-                if (fis.read(packetHeader) != 16) {
-                    System.out.println("Failed to read packet header.");
-                    break;
-                }
-
-
-                PacketHeader packetHeader1 = parsePacketHeader(packetHeader);
-                // 读取数据包数据
-                byte[] packetData = new byte[packetHeader1.getCapLen()];
-                if (fis.read(packetData) != packetHeader1.getCapLen()) {
-                    System.out.println("Failed to read packet data.");
-                    break;
-                }
-                parseFrameHeader(packetData);
-
-                int ipHeaderLen = (packetData[14] - 64 ) * 4;
-                byte[] ipHeaderBuffer = Arrays.copyOfRange(packetData, 14, 14 + ipHeaderLen);
-                IPHeader ipHeader = parseIPHeader(ipHeaderBuffer);
-                ipHeader.getProtocol();
-                Log.d(TAG, "Parser: " + ipHeader.getProtocol());
-                if (ipHeader.getProtocol() != IPHeader.PROTOCOL_RTCP) {
-                    System.out.println("This packet is not RTCP segment");
-                    continue;
-                }
-                byte[] rtcp = Arrays.copyOfRange(packetData, 14 + ipHeaderLen, packetData.length);
-                parseRTCPPacket(rtcp);
-            }
-
+//            parse(fis);
+            parse1(fis);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
+
     public static void parseRTCPPacket(byte[] rtcpData) {
+        String url = new String(rtcpData);
+        System.out.println("Extracted URL (if any): " + url);
         ByteBuffer buffer = ByteBuffer.wrap(rtcpData).order(ByteOrder.BIG_ENDIAN);
 
         // 解析 RTCP 报文头部
-        int firstByte = buffer.get();
+        int firstByte = buffer.get(0);
         int version = (firstByte >> 6) & 0x03;
-        int padding = (firstByte >> 5) & 0x01;
-        int rc = (firstByte >> 0) & 0x1F;
-        int payloadType = buffer.get() & 0xFF;
-        int length = buffer.getShort() & 0xFFFF;
-        int ssrc = buffer.getInt();
+        byte packetType = buffer.get(1);
+        int packetTypeInt = packetType & 0xFF;
+
+        // 检查是否是已知的RTCP包类型
+        if (packetTypeInt < 200 || packetTypeInt > 204) {
+            return; // 这是一个RTCP数据包
+        }
+//        int length = buffer.getShort() & 0xFFFF;
+//        int ssrc = buffer.getInt();
 
         System.out.println("RTCP Packet Details:");
         System.out.println("Version: " + version);
-        System.out.println("Padding: " + padding);
-        System.out.println("Reception Report Count: " + rc);
-        System.out.println("Payload Type: " + payloadType);
-        System.out.println("Length: " + length);
-        System.out.println("SSRC: " + Integer.toHexString(ssrc));
+//        System.out.println("Padding: " + padding);
+//        System.out.println("Reception Report Count: " + rc);
+//        System.out.println("Payload Type: " + payloadType);
+//        System.out.println("Length: " + length);
+//        System.out.println("SSRC: " + Integer.toHexString(ssrc));
 
 //        // 解析报告块（如果有的话）
 //        for (int i = 0; i < rc; i++) {
@@ -109,6 +90,135 @@ public class PcapRTCPParser {
 //            }
 //        }
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public static void parseRTCPAppPacket(byte[] rtcpData) {
+        if (rtcpData.length < 12) {
+            System.out.println("RTCP APP packet too short to be valid.");
+            return;
+        }
+
+        ByteBuffer buffer = ByteBuffer.wrap(rtcpData);
+
+        // 解析版本、填充、报告数 (1字节)
+        byte firstByte = buffer.get();
+        int version = (firstByte >> 6) & 0x03;
+        if (version != 2) {
+            System.out.println("Unsupported RTCP version: " + version);
+            return;
+        }
+
+        // 解析包类型 (1字节)
+        byte packetType = buffer.get();
+        int packetTypeInt = packetType & 0xFF;
+        if (packetTypeInt != 204) {
+            System.out.println("Not an RTCP APP packet. Packet Type: " + packetTypeInt);
+            return;
+        }
+
+        // 解析长度字段 (2字节)
+        short length = buffer.getShort();
+        int dataLength = length * 4; // 32-bit words to bytes
+
+        // 解析 SSRC/CSRC Identifier (4字节)
+        long ssrc = buffer.getInt() & 0xFFFFFFFFL;
+        System.out.println("SSRC: " + ssrc);
+
+        // 解析应用程序名称 (4字节)
+        byte[] nameBytes = new byte[4];
+        buffer.get(nameBytes);
+        String appName = new String(nameBytes, StandardCharsets.US_ASCII);
+        System.out.println("Application Name: " + appName);
+
+        // 解析应用程序特定的数据
+        byte[] appSpecificData = new byte[dataLength - 8]; // Subtract 8 bytes (4 for SSRC and 4 for Name)
+        buffer.get(appSpecificData);
+
+        // 示例：假设应用程序特定的数据是 URL 字符串
+        String url = new String(appSpecificData, StandardCharsets.UTF_8).trim();
+        System.out.println("Parsed URL: " + url);
+    }
+
+    public static void parse(FileInputStream fis) {
+        try {
+            // 开始读取每个数据包
+            while (fis.available() > 0) {
+                byte[] packetHeader = new byte[16];
+                if (fis.read(packetHeader) != 16) {
+                    System.out.println("Failed to read packet header.");
+                    break;
+                }
+
+
+                PacketHeader packetHeader1 = parsePacketHeader(packetHeader);
+                // 读取数据包数据
+                byte[] packetData = new byte[packetHeader1.getCapLen()];
+                if (fis.read(packetData) != packetHeader1.getCapLen()) {
+                    System.out.println("Failed to read packet data.");
+                    break;
+                }
+                parseFrameHeader(packetData);
+
+                int ipHeaderLen = (packetData[14] - 64 ) * 4;
+                byte[] ipHeaderBuffer = Arrays.copyOfRange(packetData, 14, 14 + ipHeaderLen);
+                IPHeader ipHeader = parseIPHeader(ipHeaderBuffer);
+                ipHeader.getProtocol();
+                Log.d(TAG, "Parser: " + ipHeader.getProtocol());
+                if (ipHeader.getProtocol() != IPHeader.PROTOCOL_UDP) {
+                    System.out.println("This packet is not RTCP segment");
+                    continue;
+                }
+                byte[] rtcp = Arrays.copyOfRange(packetData, 14 + ipHeaderLen, packetData.length);
+                parseRTCPPacket(rtcp);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void parse1(FileInputStream fis) {
+        try {
+            while (fis.available() > 0) {
+                byte[] packetHeader = new byte[16];
+                if (fis.read(packetHeader) != 16) {
+                    System.out.println("Failed to read packet header.");
+                    break;
+                }
+
+                PacketHeader packetHeader1 = parsePacketHeader(packetHeader);
+                // 读取数据包数据
+                byte[] packetData = new byte[packetHeader1.getCapLen()];
+                if (fis.read(packetData) != packetHeader1.getCapLen()) {
+                    System.out.println("Failed to read packet data.");
+                    break;
+                }
+
+                int ipHeaderLen = (packetData[14] & 0x0F) * 4;
+                byte[] ipHeaderBuffer = Arrays.copyOfRange(packetData, 14, 14 + ipHeaderLen);
+                IPHeader ipHeader = parseIPHeader(ipHeaderBuffer);
+
+                if (ipHeader.getProtocol() != IPHeader.PROTOCOL_UDP) {
+                    System.out.println("This packet is not a UDP segment");
+                    continue;
+                }
+
+                // 假设数据包包含 RTCP 数据，解析它
+                int udpHeaderStart = 14 + ipHeaderLen;
+                byte[] udpHeader = Arrays.copyOfRange(packetData, udpHeaderStart, udpHeaderStart + 8);
+                UDPHeader(udpHeader);
+                int rtcpDataStart = udpHeaderStart + 8;
+                byte[] rtcpData = Arrays.copyOfRange(packetData, rtcpDataStart, packetData.length);
+
+//                parseRTCPPacket(rtcpData);
+                parseRTCPAppPacket(rtcpData);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     public static IPHeader parseIPHeader(byte[] ipHeaderBuffer) {
         IPHeader ipHeader = new IPHeader();
@@ -191,6 +301,24 @@ public class PcapRTCPParser {
         return packetHeader;
     }
 
+    // 构造函数，接受一个8字节的数组作为输入
+    public static  void UDPHeader (byte[] udpHeaderBytes) {
+        if (udpHeaderBytes.length != 8) {
+            throw new IllegalArgumentException("UDP header must be 8 bytes long");
+        }
+        int sourcePort;       // 源端口号
+        int destinationPort;  // 目标端口号
+        int length;           // 数据报长度
+        int checksum;
+        // 解析源端口号
+        sourcePort = ((udpHeaderBytes[0] & 0xFF) << 8) | (udpHeaderBytes[1] & 0xFF);
+        // 解析目标端口号
+        destinationPort = ((udpHeaderBytes[2] & 0xFF) << 8) | (udpHeaderBytes[3] & 0xFF);
+        // 解析长度
+        length = ((udpHeaderBytes[4] & 0xFF) << 8) | (udpHeaderBytes[5] & 0xFF);
+        // 解析校验和
+        checksum = ((udpHeaderBytes[6] & 0xFF) << 8) | (udpHeaderBytes[7] & 0xFF);
+    }
 
 //    private static void parseRTCPPacket(byte[] packetData) {
 //        if (packetData.length < 4) {
