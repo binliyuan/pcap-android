@@ -2,6 +2,7 @@ package com.deepscience.example;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,6 +18,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     Button start;
 
     Button stop;
+    Button parse;
 
     boolean Fisrt = true;
 
@@ -77,10 +81,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: " + "runTcpDump");
     }
 
-    private void capture(){
-        tcpDumpUtil.runTcpDump();
-    }
-
     public static void verifyStoragePermissions(Activity activity) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity,
@@ -103,24 +103,37 @@ public class MainActivity extends AppCompatActivity {
         isFilter = findViewById(R.id.is_filter);
         start = findViewById(R.id.start);
         stop = findViewById(R.id.stop);
+        parse = findViewById(R.id.parse);
         tcpDumpUtil = new TcpDumpUtil();
         tcpDumpUtil.setHandler(handler);
+
 //        NDKTools.pcapPrint();
 //        NDKTools.pcapInit();
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "开始抓包", Toast.LENGTH_SHORT).show();
-                capture();
+                postMessage(Def.START);
             }
         });
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this,"已停止抓包",Toast.LENGTH_SHORT).show();
-                tcpDumpUtil.stopTcpDump();
+                postMessage(Def.STOP);
             }
         });
+
+
+        parse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,"开始解析",Toast.LENGTH_SHORT).show();
+                postMessage(Def.PARSE);
+            }
+        });
+
+
         isFilter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -138,6 +151,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        Intent intent = new Intent(this, MyService.class);
+        startService(intent);
+    }
+
+    public void postMessage(int what) {
+        Message message = new Message();
+        message.what = what;
+        // 发布消息事件
+        EventBus.getDefault().post(message);
     }
 
 }

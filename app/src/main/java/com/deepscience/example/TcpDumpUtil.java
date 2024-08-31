@@ -35,6 +35,11 @@ public class TcpDumpUtil {
         processCmd.stop();
     }
 
+    public void parse() {
+        Thread parserThread = new Thread(parser);
+        parserThread.start();
+    }
+
     public String getMessage() {
         return processCmd.getMessage();
     }
@@ -88,11 +93,6 @@ public class TcpDumpUtil {
 
         @Override
         public void run() {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             parsePcapFile("/sdcard/tmp/capture.pcap");
         }
 
@@ -100,7 +100,8 @@ public class TcpDumpUtil {
 //            PCAPService pcapService = new PCAPService();
 //            File pcapFile = new File(pcapFilePath);
 //            pcapService.parsePcap(pcapFile);
-            PcapRTCPParser.Parser(pcapFilePath);
+//            PcapRTCPParser.Parser(pcapFilePath);
+            Parse.parse(pcapFilePath);
         }
     }
 

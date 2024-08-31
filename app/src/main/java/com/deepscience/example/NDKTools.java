@@ -2,10 +2,10 @@ package com.deepscience.example;
 
 public class NDKTools {
 
-    static {
-        System.loadLibrary("pcap");
-        System.loadLibrary("ndkpcap-jni");
-    }
+//    static {
+//        System.loadLibrary("pcap");
+//        System.loadLibrary("ndkpcap-jni");
+//    }
 
 
     public static native void pcapPrint();
